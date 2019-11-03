@@ -11,6 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::namespace('Core')->group(function () {
+    Route::get('/', 'FrontendController@home');
 });
+
+Auth::routes();
