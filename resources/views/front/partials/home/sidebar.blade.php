@@ -7,7 +7,7 @@
             <ul>
                 @foreach ($genres as $genre)
                     <li>
-                        <a href="{{ url('/').'?genre='.$genre->name }}">
+                        <a href="{{ url('/').'?genre='.$genre->id }}">
                             <div class="box-wrapper">
                                 <div class="box-left">
                                 </div>

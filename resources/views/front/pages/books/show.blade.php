@@ -69,7 +69,7 @@
                             <div class="col-lg-6">
                                 <ul class="list-unstyled mb-0">
                                     @foreach ($book->genres as $genre)
-                                        <li><a href="{{ url('/').'?genre='.$genre->name }}">{{ $genre->name }}</a></li>
+                                        <li><a href="{{ url('/').'?genre='.$genre->id }}">{{ $genre->name }}</a></li>
                                     @endforeach
                                     <hr/>
                                     <li>

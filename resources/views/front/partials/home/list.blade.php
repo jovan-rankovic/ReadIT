@@ -19,7 +19,7 @@
                     <div class="post-bottom">
                         <div class="post-author-box">
                             @foreach($book->genres as $genre)
-                                <a href="{{ url('/').'?genre='.$genre->name }}" class="author-name">$genre->name</a>
+                                <a href="{{ url('/').'?genre='.$genre->id }}" class="author-name">{{ $genre->name }}</a>
                             @endforeach
                         </div>
                         <div class="post-meta">
