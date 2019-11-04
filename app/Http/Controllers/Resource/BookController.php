@@ -28,7 +28,7 @@ class BookController extends Controller
 
     public function store(BookRequest $request)
     {
-        $image = $request->image;
+        $image = request('image');
 
         if($image)
         {
@@ -44,12 +44,15 @@ class BookController extends Controller
                     'image' => $imgFolder.$imgName
                 ]);
 
-                foreach (request('genreIds') as $genre)
+                if(request('genreIds'))
                 {
-                    BookGenre::create([
-                        'book_id' => $book->id,
-                        'genre_id' => $genre
-                    ]);
+                    foreach (request('genreIds') as $genre)
+                    {
+                        BookGenre::create([
+                            'book_id' => $book->id,
+                            'genre_id' => $genre
+                        ]);
+                    }
                 }
             }
         }
@@ -60,12 +63,15 @@ class BookController extends Controller
                 'description' => $request->description
             ]);
 
-            foreach (request('genreIds') as $genre)
+            if(request('genreIds'))
             {
-                BookGenre::create([
-                    'book_id' => $book->id,
-                    'genre_id' => $genre
-                ]);
+                foreach (request('genreIds') as $genre)
+                {
+                    BookGenre::create([
+                        'book_id' => $book->id,
+                        'genre_id' => $genre
+                    ]);
+                }
             }
         }
 
@@ -75,7 +81,7 @@ class BookController extends Controller
 
     public function show(Book $book)
     {
-        //
+        return view('front.pages.books.show', compact('book'));
     }
 
 
@@ -88,7 +94,7 @@ class BookController extends Controller
 
     public function update(BookRequest $request, Book $book)
     {
-        $image = $request->image;
+        $image = request('image');
 
         if($image)
         {
@@ -114,14 +120,17 @@ class BookController extends Controller
                     'image' => $imgFolder.$imgName
                 ]);
 
-                foreach (request('genreIds') as $genre)
-                {
-                    BookGenre::where('book_id', $book->id)->delete();
+                $book->genres()->detach();
 
-                    BookGenre::create([
-                        'book_id' => $book->id,
-                        'genre_id' => $genre
-                    ]);
+                if(request('genreIds'))
+                {
+                    foreach (request('genreIds') as $genre)
+                    {
+                        BookGenre::create([
+                            'book_id' => $book->id,
+                            'genre_id' => $genre
+                        ]);
+                    }
                 }
             }
         }
@@ -132,14 +141,17 @@ class BookController extends Controller
                 'description' => $request->description
             ]);
 
-            foreach (request('genreIds') as $genre)
-            {
-                BookGenre::where('book_id', $book->id)->delete();
+            $book->genres()->detach();
 
-                BookGenre::create([
-                    'book_id' => $book->id,
-                    'genre_id' => $genre
-                ]);
+            if(request('genreIds'))
+            {
+                foreach (request('genreIds') as $genre)
+                {
+                    BookGenre::create([
+                        'book_id' => $book->id,
+                        'genre_id' => $genre
+                    ]);
+                }
             }
         }
 
@@ -149,6 +161,16 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
+        if(File::exists(public_path().'/'.$book->image))
+        {
+            $defaultImage = public_path().'/img/book/default-cover.jpg';
+
+            if(public_path().'/'.$book->image != $defaultImage)
+            {
+                File::delete(public_path().'/'.$book->image);
+            }
+        }
+
         $book->delete();
 
         return redirect('/');

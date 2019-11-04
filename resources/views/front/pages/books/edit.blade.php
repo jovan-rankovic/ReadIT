@@ -28,12 +28,19 @@
                 <div class="form-group">
                     <p>Genres:</p>
                     @foreach ($genres as $genre)
-                        <label><input type="checkbox" name="genreIds[]" value="{{ $genre->id }}" /> {{ $genre->name }}</label>
+                        <label><input type="checkbox" name="genreIds[]" value="{{ $genre->id }}"
+                        @if(count($book->genres->where('id', $genre->id)))
+                            checked
+                        @endif
+                        /> {{ $genre->name }}</label>
                     @endforeach
                 </div>
                 <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" name="image" required />
+                    <img class="img-responsive" width="200" src="{{ asset($book->image) }}" alt="book_image" />
+                </div>
+                <div class="form-group">
+                    <label for="image">Image:</label>
+                    <input type="file" name="image" />
                     (max. 2MB)
                     <br/>
                 </div>

@@ -27,39 +27,62 @@
 
                 <hr/>
 
+                @if($book->reserved == false)
+                    <b class="text-success">Available.</b>
+                @else
+                    <b class="text-danger">Currently unavailable.</b>
+                @endif
+
+                <br/><br/>
+
                 @auth
-                    <button class="btn btn-success">Check Out</button>
-                    <button class="btn btn-danger">Check In</button>
+                    @if($book->reserved == false)
+                        <button class="btn btn-success" onclick="document.getElementById('book-reservation').submit();">Reserve</button>
+                        <form id="book-reservation" action="{{ url('/books/'.$book->id.'/reserve') }}" method="POST" style="display: none;">
+                            @method('PATCH')
+                            @csrf
+                            <input type="hidden" name="user_id" value="{{ Auth::id() }}" />
+                            <input type="hidden" name="user" value="{{ Auth::user()->name }}" />
+                        </form>
+                    @endif
+                    @if($book->user_id == Auth::id())
+                        <button class="btn btn-danger" onclick="document.getElementById('book-return').submit();">Return</button>
+                        <form id="book-return" action="{{ url('/books/'.$book->id.'/return') }}" method="POST" style="display: none;">
+                            @method('PATCH')
+                            @csrf
+                        </form>
+                    @endif
                 @endauth
-                <b>Currently unavailable.</b>
 
             </div>
 
             <!-- Sidebar Widgets Column -->
-            <div class="col-md-4">
+                <div class="col-md-4">
 
-                <div class="card my-4">
-                    <h5 class="card-header">Actions</h5>
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li>
-                                <a href="{{ url('/books/create') }}">Add a new book</a>
-                            </li>
-                            <li>
-                                <a href="{{ url('/books/'.$book->id.'/edit') }}">Edit this book</a>
-                            </li>
-                            <li>
-                                <a href="{{ url('/books/'.$book->id) }}" onclick="event.preventDefault();document.getElementById('delete-book').submit();">
-                                    Remove this book
-                                </a>
-                                <form id="delete-book" action="{{ url('/books/'.$book->id) }}" method="POST" style="display: none;">
-                                    @method('DELETE')
-                                    @csrf
-                                </form>
-                            </li>
-                        </ul>
+                @if(Auth::user()->role->name == 'Admin')
+                    <div class="card my-4">
+                        <h5 class="card-header">Actions</h5>
+                        <div class="card-body">
+                            <ul class="list-unstyled mb-0">
+                                <li>
+                                    <a href="{{ url('/books/create') }}">Add a new book</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('/books/'.$book->id.'/edit') }}">Edit this book</a>
+                                </li>
+                                <li>
+                                    <a href="{{ url('/books/'.$book->id) }}" onclick="event.preventDefault();document.getElementById('delete-book').submit();">
+                                        Remove this book
+                                    </a>
+                                    <form id="delete-book" action="{{ url('/books/'.$book->id) }}" method="POST" style="display: none;">
+                                        @method('DELETE')
+                                        @csrf
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                @endif
 
                 <!-- Categories Widget -->
                 <div class="card my-4">
@@ -71,10 +94,12 @@
                                     @foreach ($book->genres as $genre)
                                         <li><a href="{{ url('/').'?genre='.$genre->id }}">{{ $genre->name }}</a></li>
                                     @endforeach
-                                    <hr/>
-                                    <li>
-                                        <a href="{{ url('/genres') }}">Genre list</a>
-                                    </li>
+                                    @if(Auth::user()->role->name == 'Admin')
+                                        <hr/>
+                                        <li>
+                                            <a href="{{ url('/genres') }}">Genre list</a>
+                                        </li>
+                                    @endif
                                 </ul>
                             </div>
                         </div>

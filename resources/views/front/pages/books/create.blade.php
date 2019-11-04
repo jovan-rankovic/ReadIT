@@ -31,8 +31,8 @@
                     @endforeach
                 </div>
                 <div class="form-group">
-                    <label for="image">Image</label>
-                    <input type="file" name="image" required />
+                    <label for="image">Image:</label>
+                    <input type="file" name="image" />
                     (max. 2MB)
                     <br/>
                 </div>
