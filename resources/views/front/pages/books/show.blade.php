@@ -45,7 +45,7 @@
                             <input type="hidden" name="user" value="{{ Auth::user()->name }}" />
                         </form>
                     @endif
-                    @if($book->user_id == Auth::id() || Auth::user()->role->name == 'Admin')
+                    @if($book->user_id == Auth::id() || ($book->user_id != null && Auth::user()->role->name == 'Admin'))
                         <button class="btn btn-danger" onclick="document.getElementById('book-return').submit();">Return</button>
                         <form id="book-return" action="{{ url('/books/'.$book->id.'/return') }}" method="POST" style="display: none;">
                             @method('PATCH')
