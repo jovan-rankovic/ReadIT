@@ -59,30 +59,32 @@
             <!-- Sidebar Widgets Column -->
                 <div class="col-md-4">
 
-                @if(Auth::user()->role->name == 'Admin')
-                    <div class="card my-4">
-                        <h5 class="card-header">Actions</h5>
-                        <div class="card-body">
-                            <ul class="list-unstyled mb-0">
-                                <li>
-                                    <a href="{{ url('/books/create') }}">Add a new book</a>
-                                </li>
-                                <li>
-                                    <a href="{{ url('/books/'.$book->id.'/edit') }}">Edit this book</a>
-                                </li>
-                                <li>
-                                    <a href="{{ url('/books/'.$book->id) }}" onclick="event.preventDefault();document.getElementById('delete-book').submit();">
-                                        Remove this book
-                                    </a>
-                                    <form id="delete-book" action="{{ url('/books/'.$book->id) }}" method="POST" style="display: none;">
-                                        @method('DELETE')
-                                        @csrf
-                                    </form>
-                                </li>
-                            </ul>
+                @auth
+                    @if(Auth::user()->role->name == 'Admin')
+                        <div class="card my-4">
+                            <h5 class="card-header">Actions</h5>
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                                    <li>
+                                        <a href="{{ url('/books/create') }}">Add a new book</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('/books/'.$book->id.'/edit') }}">Edit this book</a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ url('/books/'.$book->id) }}" onclick="event.preventDefault();document.getElementById('delete-book').submit();">
+                                            Remove this book
+                                        </a>
+                                        <form id="delete-book" action="{{ url('/books/'.$book->id) }}" method="POST" style="display: none;">
+                                            @method('DELETE')
+                                            @csrf
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
-                @endif
+                    @endif
+                @endauth
 
                 <!-- Categories Widget -->
                 <div class="card my-4">
@@ -94,12 +96,14 @@
                                     @foreach ($book->genres as $genre)
                                         <li><a href="{{ url('/').'?genre='.$genre->id }}">{{ $genre->name }}</a></li>
                                     @endforeach
-                                    @if(Auth::user()->role->name == 'Admin')
-                                        <hr/>
-                                        <li>
-                                            <a href="{{ url('/genres') }}">Genre list</a>
-                                        </li>
-                                    @endif
+                                    @auth
+                                        @if(Auth::user()->role->name == 'Admin')
+                                            <hr/>
+                                            <li>
+                                                <a href="{{ url('/genres') }}">Genre list</a>
+                                            </li>
+                                        @endif
+                                    @endauth
                                 </ul>
                             </div>
                         </div>
